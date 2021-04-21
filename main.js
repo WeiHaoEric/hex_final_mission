@@ -152,9 +152,9 @@ function getTableList() {
 function getChart() {
   let calRsult = {};
   orderData.forEach(({ products }) => {
-    products.map(({ title }) => {
-      if (calRsult[title]) calRsult[title] += 1;
-      else calRsult[title] = 1;
+    products.map(({ category }) => {
+      if (calRsult[category]) calRsult[category] += 1;
+      else calRsult[category] = 1;
     });
   });
 
