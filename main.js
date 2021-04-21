@@ -37,6 +37,19 @@ function deleteTheOrder(prdId) {
     console.log(dom.className);
     dom.addEventListener("click", (event) => {
       console.log(`delete the id-${dom.className}!`);
+
+      const sliceIdx = dom.className.search("@");
+      const orderId = dom.className.slice(sliceIdx+1);
+      // console.log("===>",orderId);
+
+      
+      
+
+
+      
+
+
+
     });
   });
 }
@@ -114,14 +127,14 @@ function getTableList() {
         <td>${address}</td>
         <td>${email}</td>
         <td>
-          ${prdList.map((prd) => `<p>${prd}</p>`)}
+          ${prdList.reduce((accum, prd) => accum+`<p>${prd}</p>`, "")}
         </td>
         <td>${new Date(time).toLocaleDateString("cn-TW")}</td>
         <td class="orderStatus">
           <a href="#">${paid ? "已處理" : "未處理"}</a>
         </td>
         <td>
-          <input type="button" class="${`del-btn id-${prdId}`}" value="刪除" />
+          <input type="button" class="${`del-btn id@${prdId}`}" value="刪除" />
         </td>
       </tr>
       `;
