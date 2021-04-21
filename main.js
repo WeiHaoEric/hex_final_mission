@@ -132,7 +132,7 @@ function getTableList() {
         <td>
           ${prdList.reduce((accum, prd) => accum + `<p>${prd}</p>`, "")}
         </td>
-        <td>${new Date(time).toLocaleDateString("cn-TW")}</td>
+        <td>${new Date(time*1000).toLocaleDateString("cn-TW")}</td>
         <td class="orderStatus">
           <a href="#">${paid ? "已處理" : "未處理"}</a>
         </td>
