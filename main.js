@@ -39,28 +39,24 @@ function deleteAllOrders() {
 }
 
 function getTableList() {
-  // const {
-  //   createdAt,
-  //   id,
-  //   paid,
-  //   products,
-  //   quantity,
-  //   total,
-  //   updatedAt,
-  //   user,
-  // } = orderData[0];
-  // const { address, email, name, payment, tel } = user;
-  // const {
-  //   category,
-  //   description,
-  //   id: prdId,
-  //   images,
-  //   origin_price,
-  //   price,
-  //   quantity: prdQuantity,
-  //   title: prdName,
-  // } = products;
-  // get Table Dom
+  let tableData = {};
+  orderData.forEach(
+    ({ createdAt, id: prdId, paid, products, updatedAt, user }) => {
+      const prdList = products.map(({ title }) => title);
+      const { name, address, email } = user;
+
+      tableData = {
+        prdList,
+        name,
+        address,
+        email,
+        time: updatedAt ? updatedAt : createdAt,
+        paid,
+      };
+    }
+  );
+
+  console.log("===>", tableData);
 }
 
 function getChart() {
@@ -94,7 +90,7 @@ function getChart() {
 
 function render() {
   getChart();
-  // getTableList();
+  getTableList();
 }
 
 // main
