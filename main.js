@@ -39,17 +39,20 @@ function deleteTheOrder(prdId) {
       console.log(`delete the id-${dom.className}!`);
 
       const sliceIdx = dom.className.search("@");
-      const orderId = dom.className.slice(sliceIdx+1);
-      // console.log("===>",orderId);
+      const orderId = dom.className.slice(sliceIdx + 1);
 
-      
-      
-
-
-      
-
-
-
+      axios
+        .delete(`${SERVER_URL}/${orderId}`, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then((resp) => {
+          const { status, message } = resp;
+          if (status) getOrderList();
+          console.log(message);
+        })
+        .catch((err) => console.log("err:", err));
     });
   });
 }
@@ -127,7 +130,7 @@ function getTableList() {
         <td>${address}</td>
         <td>${email}</td>
         <td>
-          ${prdList.reduce((accum, prd) => accum+`<p>${prd}</p>`, "")}
+          ${prdList.reduce((accum, prd) => accum + `<p>${prd}</p>`, "")}
         </td>
         <td>${new Date(time).toLocaleDateString("cn-TW")}</td>
         <td class="orderStatus">
