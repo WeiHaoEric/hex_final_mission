@@ -8,7 +8,7 @@ let orderData = null;
 
 // func
 function getOrderList() {
-  console.log("get order list");
+  // console.log("get order list");
   axios
     .get(SERVER_URL, {
       headers: {
@@ -16,7 +16,7 @@ function getOrderList() {
       },
     })
     .then((resp) => {
-      console.log("===>", resp.data);
+      // console.log("===>", resp.data);
       const { data, status } = resp;
       if (status) {
         orderData = data.orders;
@@ -30,12 +30,35 @@ function modifyOrder() {
   console.log("modify order");
 }
 
-function deleteTheOrder() {
-  console.log("delete the order!");
+function deleteTheOrder(prdId) {
+  let itemDom = document.querySelectorAll(`.del-btn`);
+
+  itemDom.forEach((dom) => {
+    console.log(dom.className);
+    dom.addEventListener("click", (event) => {
+      console.log(`delete the id-${dom.className}!`);
+    });
+  });
 }
 
 function deleteAllOrders() {
-  console.log("delete All orders!");
+  let cleanAllDom = document.querySelector(".discardAllBtn");
+  console.log(cleanAllDom);
+  cleanAllDom.addEventListener("click", (event) => {
+    // console.log("delete All orders!");
+    axios
+      .delete(SERVER_URL, {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then((resp) => {
+        const { status, message } = resp;
+        if (status) getOrderList();
+        console.log(message);
+      })
+      .catch((err) => console.log("err:", err));
+  });
 }
 
 function getTableList() {
@@ -78,11 +101,11 @@ function getTableList() {
     }
   );
 
-  console.log("===>", tableData);
+  // console.log("===>", tableData);
   tableData.forEach(
     ({ prdId, prdList, phone, name, address, email, time, paid }) => {
       const tmp = `
-      <tr>
+      <tr }>
         <td>${prdId}</td>
         <td>
           <p>${name}</p>
@@ -95,15 +118,15 @@ function getTableList() {
         </td>
         <td>${new Date(time).toLocaleDateString("cn-TW")}</td>
         <td class="orderStatus">
-          <a href="#">${paid?"已處理":"未處理"}</a>
+          <a href="#">${paid ? "已處理" : "未處理"}</a>
         </td>
         <td>
-          <input type="button" class="delSingleOrder-Btn" value="刪除" />
+          <input type="button" class="${`del-btn id-${prdId}`}" value="刪除" />
         </td>
       </tr>
       `;
 
-      domContext+=tmp;
+      domContext += tmp;
     }
   );
 
@@ -121,7 +144,7 @@ function getChart() {
 
   let chartData = [];
   Object.keys(calRsult).forEach((key) => chartData.push([key, calRsult[key]]));
-  console.log(chartData);
+  // console.log(chartData);
 
   // C3.js
   let chart = c3.generate({
@@ -142,6 +165,8 @@ function getChart() {
 function render() {
   getChart();
   getTableList();
+  deleteAllOrders();
+  deleteTheOrder();
 }
 
 // main
