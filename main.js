@@ -17,9 +17,9 @@ function getOrderList() {
     })
     .then((resp) => {
       console.log("===>", resp.data);
-      const { data, statusTesxt } = resp;
+      const { data, status } = resp;
       if (status) {
-        orderData = data;
+        orderData = data.orders;
         render();
       }
     })
@@ -38,42 +38,50 @@ function deleteAllOrders() {
   console.log("delete All orders!");
 }
 
-function render() {
-  const {
-    createdAt,
-    id,
-    paid,
-    products,
-    quantity,
-    total,
-    updatedAt,
-    user,
-  } = orderData;
+function getTableList() {
+  // const {
+  //   createdAt,
+  //   id,
+  //   paid,
+  //   products,
+  //   quantity,
+  //   total,
+  //   updatedAt,
+  //   user,
+  // } = orderData[0];
+  // const { address, email, name, payment, tel } = user;
+  // const {
+  //   category,
+  //   description,
+  //   id: prdId,
+  //   images,
+  //   origin_price,
+  //   price,
+  //   quantity: prdQuantity,
+  //   title: prdName,
+  // } = products;
+  // get Table Dom
+}
 
-  const { address, email, name, payment, tel } = user;
+function getChart() {
+  let calRsult = {};
+  orderData.forEach(({ products }) => {
+    products.map(({ title }) => {
+      if (calRsult[title]) calRsult[title] += 1;
+      else calRsult[title] = 1;
+    });
+  });
 
-  const {
-    category,
-    description,
-    id: prdId,
-    images,
-    origin_price,
-    price,
-    quantity: prdQuantity,
-    title: prdName,
-  } = products;
+  let chartData = [];
+  Object.keys(calRsult).forEach((key) => chartData.push([key, calRsult[key]]));
+  console.log(chartData);
 
   // C3.js
   let chart = c3.generate({
     bindto: "#chart", // HTML 元素綁定
     data: {
       type: "pie",
-      columns: [
-        ["Louvre 雙人床架", 1],
-        ["Antony 雙人床架", 2],
-        ["Anty 雙人床架", 3],
-        ["其他", 4],
-      ],
+      columns: chartData,
       colors: {
         "Louvre 雙人床架": "#DACBFF",
         "Antony 雙人床架": "#9D7FEA",
@@ -82,6 +90,11 @@ function render() {
       },
     },
   });
+}
+
+function render() {
+  getChart();
+  // getTableList();
 }
 
 // main
