@@ -132,7 +132,7 @@ function getTableList() {
         <td>
           ${prdList.reduce((accum, prd) => accum + `<p>${prd}</p>`, "")}
         </td>
-        <td>${new Date(time*1000).toLocaleDateString("cn-TW")}</td>
+        <td>${new Date(time * 1000).toLocaleDateString("cn-TW")}</td>
         <td class="orderStatus">
           <a href="#">${paid ? "已處理" : "未處理"}</a>
         </td>
@@ -150,17 +150,38 @@ function getTableList() {
 }
 
 function getChart() {
-  let calRsult = {};
+  let calResult = {};
   orderData.forEach(({ products }) => {
-    products.map(({ category }) => {
-      if (calRsult[category]) calRsult[category] += 1;
-      else calRsult[category] = 1;
+    products.forEach(({ title, quantity, price }) => {
+      if (calResult[title]) calResult[title] += quantity * price;
+      else calResult[title] = quantity * price;
     });
   });
 
+  console.log("===>calRsult", calResult);
+
+  // sort object
+  const sortPriceList = Object.values(calResult).sort((a, b) => b - a);
+  // console.log("===>sortPriceList", sortPriceList);
+  const [top1, top2, top3, ...others] = sortPriceList;
+  console.log(top1, top2, top3, others);
+
+  // sort by top1~3 and others
   let chartData = [];
-  Object.keys(calRsult).forEach((key) => chartData.push([key, calRsult[key]]));
-  // console.log(chartData);
+  [top1, top2, top3].map((targetPrice) => {
+    Object.keys(calResult).map((key, idx) => {
+      if (calResult[key] === targetPrice) {
+        chartData.push([key, targetPrice]);
+        delete calResult[key];
+
+      };
+    });
+  });
+
+  const otherPrice = others.reduce((accum,price)=>accum+price,0)
+  chartData.push(["others", otherPrice]);
+  console.log(chartData);
+
 
   // C3.js
   let chart = c3.generate({
