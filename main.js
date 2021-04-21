@@ -39,24 +39,75 @@ function deleteAllOrders() {
 }
 
 function getTableList() {
-  let tableData = {};
-  orderData.forEach(
+  // get Table Dom
+  let tableDom = document.querySelector(".orderPage-table");
+
+  // head
+  let domContext = `
+    <thead>
+      <tr>
+        <th>訂單編號</th>
+        <th>聯絡人</th>
+        <th>聯絡地址</th>
+        <th>電子郵件</th>
+        <th>訂單品項</th>
+        <th>訂單日期</th>
+        <th>訂單狀態</th>
+        <th>操作</th>
+      </tr>
+    </thead>`;
+
+  // parse data for table content
+  let tableData = orderData.map(
     ({ createdAt, id: prdId, paid, products, updatedAt, user }) => {
       const prdList = products.map(({ title }) => title);
-      const { name, address, email } = user;
+      const { name, address, email, tel: phone } = user;
 
-      tableData = {
+      tmp = {
+        prdId,
         prdList,
         name,
+        phone,
         address,
         email,
         time: updatedAt ? updatedAt : createdAt,
         paid,
       };
+
+      return tmp;
     }
   );
 
   console.log("===>", tableData);
+  tableData.forEach(
+    ({ prdId, prdList, phone, name, address, email, time, paid }) => {
+      const tmp = `
+      <tr>
+        <td>${prdId}</td>
+        <td>
+          <p>${name}</p>
+          <p>${phone}</p>
+        </td>
+        <td>${address}</td>
+        <td>${email}</td>
+        <td>
+          ${prdList.map((prd) => `<p>${prd}</p>`)}
+        </td>
+        <td>${new Date(time).toLocaleDateString("cn-TW")}</td>
+        <td class="orderStatus">
+          <a href="#">${paid?"已處理":"未處理"}</a>
+        </td>
+        <td>
+          <input type="button" class="delSingleOrder-Btn" value="刪除" />
+        </td>
+      </tr>
+      `;
+
+      domContext+=tmp;
+    }
+  );
+
+  tableDom.innerHTML = domContext;
 }
 
 function getChart() {
